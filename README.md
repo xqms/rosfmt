@@ -46,6 +46,36 @@ you can easily define printing routines for your own data structures.
 [fmt]: https://github.com/fmtlib/fmt
 [fmt documentation]: http://fmtlib.net/
 
+Usage
+-----
+
+Just depend on the `rosfmt` catkin package as usual. One catch is that `fmt`
+requires C++11, so you need to enable that:
+
+```CMake
+cmake_minimum_required(3.0)
+project(my_package)
+
+find_package(catkin REQUIRED COMPONENTS
+	rosfmt
+	roscpp
+	rosconsole # might be required in older versions of rosfmt
+)
+
+catkin_package()
+include_directories(${catkin_INCLUDE_DIRS})
+
+# Important: enable C++11
+set(CMAKE_CXX_STANDARD 11)
+
+add_executable(my_node
+	src/my_node.cpp
+)
+target_link_libraries(my_node
+	${catkin_LIBRARIES}
+)
+```
+
 License
 -------
 
