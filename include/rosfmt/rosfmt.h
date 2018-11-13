@@ -4,6 +4,12 @@
 #ifndef ROSFMT_H
 #define ROSFMT_H
 
+#if __cplusplus < 201103L
+#error rosfmt needs C++11 support. Suggestion: add "set(CMAKE_CXX_STANDARD 11)" \
+    to your CMakeLists.txt.
+
+#else
+
 #include <ros/console.h>
 
 #include <fmt/format.h>
@@ -138,4 +144,6 @@ void print(
 
 #include "macros_generated.h"
 
-#endif
+#endif // C++11
+
+#endif // include guard
