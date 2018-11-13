@@ -41,6 +41,7 @@ endforeach()
 
 catkin_package(
 	INCLUDE_DIRS include ${fmt_HEADER_DEST}
+	CATKIN_DEPENDS roscpp rosconsole
 	LIBRARIES rosfmt
 )
 
