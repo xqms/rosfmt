@@ -2,8 +2,8 @@
 Changelog for package rosfmt
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+6.0.0 (2018-11-14)
+------------------
 * Major release bump to decouple rosfmt and fmt versions
 * rosfmt.h: produce nicer error message if C++11 is not available
 * cmake: add transitive rosconsole / roscpp deps
