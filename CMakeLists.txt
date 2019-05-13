@@ -11,8 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
 include(ExternalProject)
 ExternalProject_Add(
 	fmt
-	URL https://github.com/fmtlib/fmt/releases/download/5.2.1/fmt-5.2.1.zip
-	URL_HASH SHA256=43894ab8fe561fc9e523a8024efc23018431fa86b95d45b06dbe6ddb29ffb6cd
+	URL https://github.com/fmtlib/fmt/releases/download/5.3.0/fmt-5.3.0.zip
+	URL_HASH SHA256=4c0741e10183f75d7d6f730b8708a99b329b2f942dad5a9da3385ab92bb4a15c
 	CONFIGURE_COMMAND ""
 	BUILD_COMMAND ""
 	INSTALL_COMMAND ""
