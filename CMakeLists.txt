@@ -14,7 +14,10 @@ ExternalProject_Add(
 	URL https://github.com/fmtlib/fmt/releases/download/5.3.0/fmt-5.3.0.zip
 	URL_HASH SHA256=4c0741e10183f75d7d6f730b8708a99b329b2f942dad5a9da3385ab92bb4a15c
 	CONFIGURE_COMMAND ""
-	BUILD_COMMAND ""
+
+	# We touch all downloaded files, otherwise they get some timestamp in the
+	# past and may confuse the dependency tracking below.
+	BUILD_COMMAND find <SOURCE_DIR> -type f -exec touch {} +
 	INSTALL_COMMAND ""
 )
 
@@ -28,16 +31,21 @@ file(MAKE_DIRECTORY ${fmt_HEADER_DEST})
 foreach(FILE color.h core.h format-inl.h format.h ostream.h posix.h printf.h ranges.h time.h)
 	set(in "${fmt_SOURCE_DIR}/include/fmt/${FILE}")
 	set(out "${fmt_HEADER_DEST}/fmt/${FILE}")
-	set(fmt_HEADERS_OUT ${fmt_HEADERS_OUT} ${out})
+	list(APPEND fmt_HEADERS_OUT ${out})
 
 	set_source_files_properties(${in} PROPERTIES GENERATED TRUE)
+	set_source_files_properties(${out} PROPERTIES GENERATED TRUE)
 
 	add_custom_command(
 		OUTPUT ${out}
-		DEPENDS ${in}
+		DEPENDS ${in} fmt
 		COMMAND cmake -E copy_if_different "${in}" "${out}"
 	)
 endforeach()
+
+add_custom_target(fmt_headers
+	DEPENDS ${fmt_HEADERS_OUT}
+)
 
 catkin_package(
 	INCLUDE_DIRS include ${fmt_HEADER_DEST}
@@ -46,8 +54,9 @@ catkin_package(
 )
 
 include_directories(
+	${fmt_HEADER_DEST}
 	${catkin_INCLUDE_DIRS}
-	include ${fmt_HEADER_DEST}
+	include
 )
 
 set(CMAKE_CXX_STANDARD 11)
@@ -66,7 +75,7 @@ add_library(rosfmt
 target_link_libraries(rosfmt
 	${catkin_LIBRARIES}
 )
-add_dependencies(rosfmt fmt)
+add_dependencies(rosfmt fmt fmt_headers)
 
 add_executable(simple_test
 	test/test.cpp
