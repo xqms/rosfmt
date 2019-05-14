@@ -2,8 +2,8 @@
 Changelog for package rosfmt
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+6.1.0 (2019-05-14)
+------------------
 * cmake: fix dependency tracking bugs
 * update fmt to version 5.3.0
 * Contributors: Max Schwarz
