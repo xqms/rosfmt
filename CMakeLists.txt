@@ -11,8 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
 include(ExternalProject)
 ExternalProject_Add(
 	fmt
-	URL https://github.com/fmtlib/fmt/releases/download/5.3.0/fmt-5.3.0.zip
-	URL_HASH SHA256=4c0741e10183f75d7d6f730b8708a99b329b2f942dad5a9da3385ab92bb4a15c
+	URL https://github.com/fmtlib/fmt/releases/download/6.0.0/fmt-6.0.0.zip
+	URL_HASH SHA256=b4a16b38fa171f15dbfb958b02da9bbef2c482debadf64ac81ec61b5ac422440
 	CONFIGURE_COMMAND ""
 
 	# We touch all downloaded files, otherwise they get some timestamp in the
@@ -28,7 +28,7 @@ set(fmt_SOURCE_DIR "${SOURCE_DIR}")
 set(fmt_HEADER_DEST "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}")
 
 file(MAKE_DIRECTORY ${fmt_HEADER_DEST})
-foreach(FILE color.h core.h format-inl.h format.h ostream.h posix.h printf.h ranges.h time.h)
+foreach(FILE chrono.h color.h compile.h core.h format-inl.h format.h locale.h ostream.h posix.h printf.h ranges.h safe-duration-cast.h)
 	set(in "${fmt_SOURCE_DIR}/include/fmt/${FILE}")
 	set(out "${fmt_HEADER_DEST}/fmt/${FILE}")
 	list(APPEND fmt_HEADERS_OUT ${out})
@@ -71,6 +71,7 @@ add_library(rosfmt
 	${fmt_HEADERS_OUT}
 	${fmt_SOURCE_DIR}/src/format.cc
 	${fmt_SOURCE_DIR}/src/posix.cc
+	src/rosfmt.cpp
 )
 target_link_libraries(rosfmt
 	${catkin_LIBRARIES}
