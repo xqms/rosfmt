@@ -12,12 +12,21 @@
 
 #include <ros/console.h>
 
-#include <fmt/format.h>
+#include <fmt/core.h>
 
 #include <string>
 
 namespace rosfmt
 {
+
+std::string vformat(fmt::string_view format_str, fmt::format_args args);
+
+template<typename ... Args>
+std::string format(const std::string& formatString, const Args& ... args)
+{
+	fmt::format_arg_store<fmt::format_context, Args...> as{args...};
+	return rosfmt::vformat(formatString, as);
+}
 
 template<typename... Args>
 void print(
@@ -25,7 +34,7 @@ void print(
 	const char* file, int line, const char* function,
 	const std::string& format, const Args&... args)
 {
-	std::string s = fmt::format(format, args...);
+	std::string s = rosfmt::format(format, args...);
 	std::stringstream ss;
 	ss << s;
 	ros::console::print(filter, logger, level, ss, file, line, function);
