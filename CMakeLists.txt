@@ -55,8 +55,8 @@ catkin_package(
 
 include_directories(
 	${fmt_HEADER_DEST}
-	${catkin_INCLUDE_DIRS}
 	include
+	${catkin_INCLUDE_DIRS}
 )
 
 set(CMAKE_CXX_STANDARD 11)
