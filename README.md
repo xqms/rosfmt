@@ -34,6 +34,16 @@ ROSFMT_INFO("Here is my string: {str}. And a number: {num}",
 );
 ```
 
+Using `rosfmt/full.h` you can print types with `std::ostream` operators
+(ROS messages, Eigen types) and ranges such as `std::vector`:
+
+```C++
+#include <rosfmt/full.h>
+
+auto x = Eigen::Matrix3d::Identity();
+ROSFMT_INFO("My matrix x:\n{}", x);
+```
+
 Of course, you can also use fmt's API directly:
 
 ```C++
