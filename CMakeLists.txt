@@ -11,8 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
 include(ExternalProject)
 ExternalProject_Add(
 	fmt
-	URL https://github.com/fmtlib/fmt/releases/download/6.0.0/fmt-6.0.0.zip
-	URL_HASH SHA256=b4a16b38fa171f15dbfb958b02da9bbef2c482debadf64ac81ec61b5ac422440
+	URL https://github.com/fmtlib/fmt/releases/download/7.1.2/fmt-7.1.2.zip
+	URL_HASH SHA256=4d6968ab7c01e95cc76df136755703defb985105a117b83057e4fd5d53680ea7
 	CONFIGURE_COMMAND ""
 
 	# We touch all downloaded files, otherwise they get some timestamp in the
@@ -28,7 +28,7 @@ set(fmt_SOURCE_DIR "${SOURCE_DIR}")
 set(fmt_HEADER_DEST "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}")
 
 file(MAKE_DIRECTORY ${fmt_HEADER_DEST})
-foreach(FILE chrono.h color.h compile.h core.h format-inl.h format.h locale.h ostream.h posix.h printf.h ranges.h safe-duration-cast.h)
+foreach(FILE chrono.h color.h compile.h core.h format-inl.h format.h locale.h os.h ostream.h posix.h printf.h ranges.h)
 	set(in "${fmt_SOURCE_DIR}/include/fmt/${FILE}")
 	set(out "${fmt_HEADER_DEST}/fmt/${FILE}")
 	list(APPEND fmt_HEADERS_OUT ${out})
@@ -55,22 +55,22 @@ catkin_package(
 
 include_directories(
 	${fmt_HEADER_DEST}
-	${catkin_INCLUDE_DIRS}
 	include
+	${catkin_INCLUDE_DIRS}
 )
 
 set(CMAKE_CXX_STANDARD 11)
 
 set_source_files_properties(
 	${fmt_SOURCE_DIR}/src/format.cc
-	${fmt_SOURCE_DIR}/src/posix.cc
+	${fmt_SOURCE_DIR}/src/os.cc
 	PROPERTIES GENERATED TRUE
 )
 
 add_library(rosfmt
 	${fmt_HEADERS_OUT}
 	${fmt_SOURCE_DIR}/src/format.cc
-	${fmt_SOURCE_DIR}/src/posix.cc
+	${fmt_SOURCE_DIR}/src/os.cc
 	src/rosfmt.cpp
 )
 target_link_libraries(rosfmt
