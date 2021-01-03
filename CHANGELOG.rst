@@ -2,6 +2,14 @@
 Changelog for package rosfmt
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* rename rosfmt library to rosfmt7 to prevent ABI mismatches
+* Update fmt to 7.1.2
+* cmake: fix ordering of internal include paths
+* add new full.h header (issue: #2)
+* Contributors: Max Schwarz
+
 6.2.0 (2020-01-09)
 ------------------
 * ensure vformat is only instantiated once -> faster compile times
