@@ -2,8 +2,8 @@
 Changelog for package rosfmt
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+7.0.0 (2021-01-03)
+------------------
 * rename rosfmt library to rosfmt7 to prevent ABI mismatches
 * Update fmt to 7.1.2
 * cmake: fix ordering of internal include paths
