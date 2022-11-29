@@ -63,7 +63,7 @@ Just depend on the `rosfmt` catkin package as usual. One catch is that `fmt`
 requires C++11, so you need to enable that:
 
 ```CMake
-cmake_minimum_required(3.0)
+cmake_minimum_required(VERSION 3.0)
 project(my_package)
 
 find_package(catkin REQUIRED COMPONENTS
