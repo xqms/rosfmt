@@ -59,8 +59,6 @@ include_directories(
 	${catkin_INCLUDE_DIRS}
 )
 
-set(CMAKE_CXX_STANDARD 11)
-
 set_source_files_properties(
 	${fmt_SOURCE_DIR}/src/format.cc
 	${fmt_SOURCE_DIR}/src/os.cc
