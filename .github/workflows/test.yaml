@@ -1,0 +1,17 @@
+name: Build and test
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build_and_test_ubuntu:
+    runs-on: ubuntu-latest
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-focal-ros-noetic-ros-base-latest
+    steps:
+    - uses: ros-tooling/action-ros-ci@0.3.0
+      with:
+        package-name: rosfmt
+        target-ros1-distro: noetic
