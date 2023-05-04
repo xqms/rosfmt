@@ -80,6 +80,15 @@ add_executable(simple_test
 	test/test.cpp
 )
 target_link_libraries(simple_test rosfmt7)
+add_test(
+	NAME SimpleTest
+	COMMAND simple_test
+)
+add_custom_target(run_simple_test
+	COMMAND simple_test
+)
+add_dependencies(run_tests run_simple_test)
+
 
 install(
 	DIRECTORY ${fmt_HEADER_DEST}/fmt/
