@@ -10,6 +10,13 @@
 
 #else
 
+// Enable old auto-detection of std::ostream operators
+#ifndef ROSFMT_NO_DEPRECATED_OSTREAM
+#ifndef FMT_DEPRECATED_OSTREAM
+#define FMT_DEPRECATED_OSTREAM
+#endif
+#endif
+
 #include <ros/console.h>
 
 #include <fmt/core.h>
@@ -32,9 +39,9 @@ template<typename... Args>
 void print(
 	ros::console::FilterBase* filter, void* logger, ros::console::Level level,
 	const char* file, int line, const char* function,
-	const std::string& format, const Args&... args)
+	fmt::format_string<Args...> fmt, Args&&... args)
 {
-	std::string s = rosfmt::format(format, args...);
+	std::string s = rosfmt::vformat(fmt, fmt::make_format_args(std::forward<Args>(args)...));
 	std::stringstream ss;
 	ss << s;
 	ros::console::print(filter, logger, level, ss, file, line, function);
