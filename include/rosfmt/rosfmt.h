@@ -10,6 +10,13 @@
 
 #else
 
+// Enable old auto-detection of std::ostream operators
+#ifndef ROSFMT_NO_DEPRECATED_OSTREAM
+#ifndef FMT_DEPRECATED_OSTREAM
+#define FMT_DEPRECATED_OSTREAM
+#endif
+#endif
+
 #include <ros/console.h>
 
 #include <fmt/core.h>
