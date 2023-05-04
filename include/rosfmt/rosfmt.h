@@ -28,6 +28,13 @@ namespace rosfmt
 
 std::string vformat(fmt::string_view format_str, fmt::format_args args);
 
+template<typename ... Args>
+std::string format(const std::string& formatString, const Args& ... args)
+{
+	fmt::format_arg_store<fmt::format_context, Args...> as{args...};
+	return rosfmt::vformat(formatString, as);
+}
+
 template<typename... Args>
 void print(
 	ros::console::FilterBase* filter, void* logger, ros::console::Level level,
