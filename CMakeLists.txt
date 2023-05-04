@@ -11,8 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
 include(ExternalProject)
 ExternalProject_Add(
 	fmt
-	URL https://github.com/fmtlib/fmt/releases/download/7.1.2/fmt-7.1.2.zip
-	URL_HASH SHA256=4d6968ab7c01e95cc76df136755703defb985105a117b83057e4fd5d53680ea7
+	URL https://github.com/fmtlib/fmt/releases/download/9.1.0/fmt-9.1.0.zip
+	URL_HASH SHA256=cceb4cb9366e18a5742128cb3524ce5f50e88b476f1e54737a47ffdf4df4c996
 	CONFIGURE_COMMAND ""
 
 	# We touch all downloaded files, otherwise they get some timestamp in the
@@ -28,7 +28,7 @@ set(fmt_SOURCE_DIR "${SOURCE_DIR}")
 set(fmt_HEADER_DEST "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}")
 
 file(MAKE_DIRECTORY ${fmt_HEADER_DEST})
-foreach(FILE chrono.h color.h compile.h core.h format-inl.h format.h locale.h os.h ostream.h posix.h printf.h ranges.h)
+foreach(FILE args.h chrono.h color.h compile.h core.h format-inl.h format.h os.h ostream.h printf.h ranges.h std.h xchar.h)
 	set(in "${fmt_SOURCE_DIR}/include/fmt/${FILE}")
 	set(out "${fmt_HEADER_DEST}/fmt/${FILE}")
 	list(APPEND fmt_HEADERS_OUT ${out})
