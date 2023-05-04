@@ -50,7 +50,7 @@ add_custom_target(fmt_headers
 catkin_package(
 	INCLUDE_DIRS include ${fmt_HEADER_DEST}
 	CATKIN_DEPENDS roscpp rosconsole
-	LIBRARIES rosfmt7
+	LIBRARIES rosfmt9
 )
 
 include_directories(
@@ -65,21 +65,21 @@ set_source_files_properties(
 	PROPERTIES GENERATED TRUE
 )
 
-add_library(rosfmt7
+add_library(rosfmt9
 	${fmt_HEADERS_OUT}
 	${fmt_SOURCE_DIR}/src/format.cc
 	${fmt_SOURCE_DIR}/src/os.cc
 	src/rosfmt.cpp
 )
-target_link_libraries(rosfmt7
+target_link_libraries(rosfmt9
 	${catkin_LIBRARIES}
 )
-add_dependencies(rosfmt7 fmt fmt_headers)
+add_dependencies(rosfmt9 fmt fmt_headers)
 
 add_executable(simple_test
 	test/test.cpp
 )
-target_link_libraries(simple_test rosfmt7)
+target_link_libraries(simple_test rosfmt9)
 add_test(
 	NAME SimpleTest
 	COMMAND simple_test
@@ -99,6 +99,6 @@ install(
 	DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
 install(
-	TARGETS rosfmt7
+	TARGETS rosfmt9
 	DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
