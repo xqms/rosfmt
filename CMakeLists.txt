@@ -76,19 +76,20 @@ target_link_libraries(rosfmt9
 )
 add_dependencies(rosfmt9 fmt fmt_headers)
 
-add_executable(simple_test
-	test/test.cpp
-)
-target_link_libraries(simple_test rosfmt9)
-add_test(
-	NAME SimpleTest
-	COMMAND simple_test
-)
-add_custom_target(run_simple_test
-	COMMAND simple_test
-)
-add_dependencies(run_tests run_simple_test)
-
+if(CATKIN_ENABLE_TESTING)
+	add_executable(simple_test
+		test/test.cpp
+	)
+	target_link_libraries(simple_test rosfmt9)
+	add_test(
+		NAME SimpleTest
+		COMMAND simple_test
+	)
+	add_custom_target(run_simple_test
+		COMMAND simple_test
+	)
+	add_dependencies(run_tests run_simple_test)
+endif()
 
 install(
 	DIRECTORY ${fmt_HEADER_DEST}/fmt/
