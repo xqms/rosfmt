@@ -2,6 +2,16 @@
 Changelog for package rosfmt
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Make the tests part conditional with CATKIN_ENABLE_TESTING check (PR #10)
+* Allow compile time checking of string (missing placeholders, etc) (PR #7)
+* Bump fmt to version 9.1.0
+* Add CI workflow (PR #8)
+* Use default C++ version instead of 11 (PR #6)
+* Fix CMake example in README (PR #5)
+* Contributors: Lucas Walter, Max Schwarz, Morten Fyhn Amundsen, Romain Reignier, mla
+
 7.0.0 (2021-01-03)
 ------------------
 * rename rosfmt library to rosfmt7 to prevent ABI mismatches
