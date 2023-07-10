@@ -5,7 +5,7 @@
 		It can be used as a safe and fast alternative to (s)printf and IOStreams.
 	</description>
 	<license>BSD</license>
-	<version>7.0.0</version>
+	<version>8.0.0</version>
 
 	<maintainer email="max.schwarz@ais.uni-bonn.de">Max Schwarz</maintainer>
 
