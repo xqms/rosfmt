@@ -1,4 +1,4 @@
-// rosfmt - type-safe ROS_* logging macros (precompiled parts)
+// rosfmt - type-safe RCLCPP_* logging macros (precompiled parts)
 // Author: Max Schwarz <max.schwarz@ais.uni-bonn.de>
 
 #include <rosfmt/rosfmt.hpp>
