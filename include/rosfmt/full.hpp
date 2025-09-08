@@ -4,8 +4,10 @@
 #ifndef ROSFMT_FULL_H
 #define ROSFMT_FULL_H
 
-#include <rosfmt/rosfmt.h>
+#include <rosfmt/rosfmt.hpp>
+
 #include <fmt/ostream.h>
 #include <fmt/ranges.h>
+#include <fmt/chrono.h>
 
 #endif
