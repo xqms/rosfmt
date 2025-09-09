@@ -1,30 +1,89 @@
 // Logging macros
-// Author: Max Schwarz <max.schwarz@ais.uni-bonn.de>
+//
+// Copyright 2025 Max Schwarz <max.schwarz@ais.uni-bonn.de>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
-#ifndef ROSFMT_LOGGING_MACROS_HPP
-#define ROSFMT_LOGGING_MACROS_HPP
+#ifndef ROSFMT__LOGGING_MACROS_HPP_
+#define ROSFMT__LOGGING_MACROS_HPP_
+
+#include <fmt/format.h>
+
+#include <chrono>
 
 #include <rclcpp/logging.hpp>
 #include <rclcpp/node.hpp>
 
 namespace rosfmt {
-namespace {
-[[maybe_unused]] const char *getLoggerName(const char *name) { return name; }
-[[maybe_unused]] const char *getLoggerName(const rclcpp::Logger &logger) {
+[[maybe_unused]] inline const char *getLoggerName(const rclcpp::Logger &logger) {
   return logger.get_name();
 }
-[[maybe_unused]] const char *getLoggerName(const rclcpp::Node &node) {
+[[maybe_unused]] inline const char *getLoggerName(const rclcpp::Node &node) {
   return node.get_logger().get_name();
 }
-[[maybe_unused]] const char *getLoggerName(const rclcpp::Node *node) {
+[[maybe_unused]] inline const char *getLoggerName(const rclcpp::Node *node) {
   return node->get_logger().get_name();
 }
-[[maybe_unused]] const char *
+[[maybe_unused]] inline const char *
 getLoggerName(const rclcpp::Node::ConstSharedPtr &node) {
   return node->get_logger().get_name();
 }
-} // namespace
-} // namespace rosfmt
+
+template <class T>
+constexpr bool isNode =
+    std::is_convertible_v<T, const rclcpp::Node &> ||
+    std::is_convertible_v<T, const rclcpp::Node::ConstSharedPtr &>;
+
+[[maybe_unused]] inline const rclcpp::Node &getNode(const rclcpp::Node &node) {
+  return node;
+}
+[[maybe_unused]] inline const rclcpp::Node &
+getNode(const rclcpp::Node::ConstSharedPtr &node) {
+  return *node;
+}
+
+struct ThrottleArgs {
+  const char *loggerName;
+  const rclcpp::Clock &clock;
+  std::int64_t duration;
+};
+
+template <class... Args>
+[[maybe_unused]] ThrottleArgs
+getThrottleArgs(const rclcpp::Node &node,
+                const std::chrono::milliseconds &duration, auto) {
+  return {node.get_logger().get_name(), *node.get_clock(), duration.count()};
+}
+template <class... Args>
+[[maybe_unused]] ThrottleArgs
+getThrottleArgs(const rclcpp::Node::ConstSharedPtr &node,
+                const std::chrono::milliseconds &duration, auto) {
+  return {node->get_logger().get_name(), *node->get_clock(), duration.count()};
+}
+template <class... Args>
+[[maybe_unused]] ThrottleArgs
+getThrottleArgs(const rclcpp::Logger &logger, const rclcpp::Clock &clock,
+                const std::chrono::milliseconds &duration) {
+  return {logger.get_name(), clock, duration.count()};
+}
+
+}  // namespace rosfmt
 
 // Only available in rclutils >= 7.0.0
 #ifdef RCLCPP_LOG_NAMED
@@ -122,9 +181,22 @@ getLoggerName(const rclcpp::Node::ConstSharedPtr &node) {
  */
 #define ROSFMT_LOG_THROTTLE(severity, logger, clock, duration, ...)            \
   do {                                                                         \
-    RCUTILS_LOG_THROTTLE_NAMED(severity, RCLCPP_LOG_TIME_POINT_FUNC(clock),    \
-                               duration, ::rosfmt::getLoggerName(logger),      \
-                               "%s", rosfmt::format(__VA_ARGS__).c_str());     \
+    if constexpr (std::is_convertible_v<decltype(logger),                      \
+                                        const rclcpp::Node &>)                 \
+      RCUTILS_LOG_THROTTLE_NAMED(                                              \
+          severity, RCLCPP_LOG_TIME_POINT_FUNC(logger.get_clock()), clock,     \
+          ::rosfmt::getLoggerName(logger), "%s",                               \
+          rosfmt::format(duration, __VA_ARGS__).c_str());                      \
+    else if constexpr (std::is_convertible_v<decltype(logger),                 \
+                                             const rclcpp::Node &>)            \
+      RCUTILS_LOG_THROTTLE_NAMED(                                              \
+          severity, RCLCPP_LOG_TIME_POINT_FUNC(logger->get_clock()), clock,    \
+          ::rosfmt::getLoggerName(logger), "%s",                               \
+          rosfmt::format(duration, __VA_ARGS__).c_str());                      \
+    else                                                                       \
+      RCUTILS_LOG_THROTTLE_NAMED(severity, RCLCPP_LOG_TIME_POINT_FUNC(clock),  \
+                                 duration, ::rosfmt::getLoggerName(logger),    \
+                                 "%s", rosfmt::format(__VA_ARGS__).c_str());   \
   } while (0)
 
 /**
@@ -143,10 +215,23 @@ getLoggerName(const rclcpp::Node::ConstSharedPtr &node) {
  */
 #define ROSFMT_LOG_SKIPFIRST_THROTTLE(severity, logger, clock, duration, ...)  \
   do {                                                                         \
-    RCUTILS_LOG_SKIPFIRST_THROTTLE_NAMED(                                      \
-        severity, RCLCPP_LOG_TIME_POINT_FUNC(clock), duration,                 \
-        ::rosfmt::getLoggerName(logger), "%s",                                 \
-        rosfmt::format(__VA_ARGS__).c_str());                                  \
+    if constexpr (std::is_convertible_v<decltype(logger),                      \
+                                        const rclcpp::Node &>)                 \
+      RCUTILS_LOG_SKIPFIRST_THROTTLE_NAMED(                                    \
+          severity, RCLCPP_LOG_TIME_POINT_FUNC(logger.get_clock()), clock,     \
+          ::rosfmt::getLoggerName(logger), "%s",                               \
+          rosfmt::format(duration, __VA_ARGS__).c_str());                      \
+    else if constexpr (std::is_convertible_v<decltype(logger),                 \
+                                             const rclcpp::Node &>)            \
+      RCUTILS_LOG_SKIPFIRST_THROTTLE_NAMED(                                    \
+          severity, RCLCPP_LOG_TIME_POINT_FUNC(logger->get_clock()), clock,    \
+          ::rosfmt::getLoggerName(logger), "%s",                               \
+          rosfmt::format(duration, __VA_ARGS__).c_str());                      \
+    else                                                                       \
+      RCUTILS_LOG_SKIPFIRST_THROTTLE_NAMED(                                    \
+          severity, RCLCPP_LOG_TIME_POINT_FUNC(clock), duration,               \
+          ::rosfmt::getLoggerName(logger), "%s",                               \
+          rosfmt::format(__VA_ARGS__).c_str());                                \
   } while (0)
 
 #else
@@ -251,13 +336,15 @@ getLoggerName(const rclcpp::Node::ConstSharedPtr &node) {
  * \param ... The format string, followed by the variable arguments for the
  * format string.
  */
-#define ROSFMT_LOG_THROTTLE(severity, logger, clock, duration, ...)            \
+#define ROSFMT_LOG_THROTTLE(severity, loggerArg, clockArg, durationArg, ...)   \
   do {                                                                         \
+    auto rosfmt_args =                                                         \
+        ::rosfmt::getThrottleArgs(loggerArg, clockArg, durationArg);           \
     auto get_time_point =                                                      \
-        [&c =                                                                  \
-             clock](rcutils_time_point_value_t *time_point) -> rcutils_ret_t { \
+        [&rosfmt_args](                                                        \
+            rcutils_time_point_value_t *time_point) -> rcutils_ret_t {         \
       try {                                                                    \
-        *time_point = c.now().nanoseconds();                                   \
+        *time_point = rosfmt_args.clock.now().nanoseconds();                   \
       } catch (...) {                                                          \
         RCUTILS_SAFE_FWRITE_TO_STDERR(                                         \
             "[rclcpp|logging.hpp] RCLCPP_DEBUG_THROTTLE could not get "        \
@@ -268,9 +355,11 @@ getLoggerName(const rclcpp::Node::ConstSharedPtr &node) {
     };                                                                         \
     RCUTILS_LOG_COND_NAMED(                                                    \
         severity,                                                              \
-        RCUTILS_LOG_CONDITION_THROTTLE_BEFORE(get_time_point, duration),       \
+        RCUTILS_LOG_CONDITION_THROTTLE_BEFORE(get_time_point,                  \
+                                              rosfmt_args.duration),           \
         RCUTILS_LOG_CONDITION_THROTTLE_AFTER, ::rosfmt::getLoggerName(logger), \
-        "%s", rosfmt::format(__VA_ARGS__).c_str());                            \
+        "%s",                                                                  \
+        rosfmt::formatThrottle(durationArg __VA_OPT__(, ) __VA_ARGS__).c_str());  \
   } while (0)
 
 /**
@@ -289,28 +378,54 @@ getLoggerName(const rclcpp::Node::ConstSharedPtr &node) {
  */
 #define ROSFMT_LOG_SKIPFIRST_THROTTLE(severity, logger, clock, duration, ...)  \
   do {                                                                         \
-    auto get_time_point =                                                      \
-        [&c =                                                                  \
-             clock](rcutils_time_point_value_t *time_point) -> rcutils_ret_t { \
-      try {                                                                    \
-        *time_point = c.now().nanoseconds();                                   \
-      } catch (...) {                                                          \
-        RCUTILS_SAFE_FWRITE_TO_STDERR(                                         \
-            "[rclcpp|logging.hpp] RCLCPP_DEBUG_THROTTLE could not get "        \
-            "current time stamp\n");                                           \
-        return RCUTILS_RET_ERROR;                                              \
-      }                                                                        \
-      return RCUTILS_RET_OK;                                                   \
-    };                                                                         \
-    RCUTILS_LOG_COND_NAMED(                                                    \
-        severity,                                                              \
-        RCUTILS_LOG_CONDITION_THROTTLE_BEFORE(get_time_point, duration)        \
-            RCUTILS_LOG_CONDITION_SKIPFIRST_BEFORE,                            \
-        RCUTILS_LOG_CONDITION_THROTTLE_AFTER                                   \
-            RCUTILS_LOG_CONDITION_SKIPFIRST_AFTER,                             \
-        ::rosfmt::getLoggerName(logger), "%s",                                 \
-        rosfmt::format(__VA_ARGS__).c_str());                                  \
-  } while (0)
+    /* If logger is rclcpp::Node, use that to get the clock and shift          \
+     * arguments */                                                            \
+    if constexpr (rosfmt::isNode<decltype(logger)>) {                          \
+      auto get_time_point =                                                    \
+          [&l = logger](                                                       \
+              rcutils_time_point_value_t *time_point) -> rcutils_ret_t {       \
+        try {                                                                  \
+          *time_point = ::rosfmt::getNode(l).get_clock()->now().nanoseconds(); \
+        } catch (...) {                                                        \
+          RCUTILS_SAFE_FWRITE_TO_STDERR(                                       \
+              "[rclcpp|logging.hpp] RCLCPP_DEBUG_THROTTLE could not get "      \
+              "current time stamp\n");                                         \
+          return RCUTILS_RET_ERROR;                                            \
+        }                                                                      \
+        return RCUTILS_RET_OK;                                                 \
+      };                                                                       \
+      RCUTILS_LOG_COND_NAMED(                                                  \
+          severity,                                                            \
+          RCUTILS_LOG_CONDITION_THROTTLE_BEFORE(get_time_point, clock)         \
+              RCUTILS_LOG_CONDITION_SKIPFIRST_BEFORE,                          \
+          RCUTILS_LOG_CONDITION_THROTTLE_AFTER                                 \
+              RCUTILS_LOG_CONDITION_SKIPFIRST_AFTER,                           \
+          ::rosfmt::getLoggerName(logger), "%s",                               \
+          rosfmt::format(duration, __VA_ARGS__).c_str());                      \
+    } else {                                                                   \
+      auto get_time_point =                                                    \
+          [&c = clock](                                                        \
+              rcutils_time_point_value_t *time_point) -> rcutils_ret_t {       \
+        try {                                                                  \
+          *time_point = c.now().nanoseconds();                                 \
+        } catch (...) {                                                        \
+          RCUTILS_SAFE_FWRITE_TO_STDERR(                                       \
+              "[rclcpp|logging.hpp] RCLCPP_DEBUG_THROTTLE could not get "      \
+              "current time stamp\n");                                         \
+          return RCUTILS_RET_ERROR;                                            \
+        }                                                                      \
+        return RCUTILS_RET_OK;                                                 \
+      };                                                                       \
+      RCUTILS_LOG_COND_NAMED(                                                  \
+          severity,                                                            \
+          RCUTILS_LOG_CONDITION_THROTTLE_BEFORE(get_time_point, duration)      \
+              RCUTILS_LOG_CONDITION_SKIPFIRST_BEFORE,                          \
+          RCUTILS_LOG_CONDITION_THROTTLE_AFTER                                 \
+              RCUTILS_LOG_CONDITION_SKIPFIRST_AFTER,                           \
+          ::rosfmt::getLoggerName(logger), "%s",                               \
+          rosfmt::format(__VA_ARGS__).c_str());                                \
+    }                                                                          \
+    while (0)
 
 #endif
 
@@ -824,4 +939,4 @@ getLoggerName(const rclcpp::Node::ConstSharedPtr &node) {
 
 #endif
 
-#endif
+#endif  // ROSFMT__LOGGING_MACROS_HPP_
