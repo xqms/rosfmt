@@ -87,8 +87,8 @@ template<class ... Args>
 
 }  // namespace rosfmt
 
-// Only available in rclutils >= 7.0.0
-#ifdef RCLCPP_LOG_NAMED
+// Only available in rcutils >= 7.0.0
+#ifdef RCUTILS_LOG_NAMED
 
 /**
  * \def ROSFMT_LOG
