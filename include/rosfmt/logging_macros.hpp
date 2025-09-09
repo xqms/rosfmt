@@ -180,20 +180,13 @@ template<class ... Args>
  * \param ... The format string, followed by the variable arguments for the
  * format string.
  */
-#define ROSFMT_LOG_THROTTLE(severity, logger, clock, duration, ...) \
+#define ROSFMT_LOG_THROTTLE(severity, loggerArg, clockArg, durationArg, ...) \
   do { \
-    if constexpr (std::is_convertible_v<decltype(logger), const rclcpp::Node &>) \
+    auto rosfmt_args = ::rosfmt::getThrottleArgs(loggerArg, clockArg, durationArg); \
     RCUTILS_LOG_THROTTLE_NAMED( \
-        severity, RCLCPP_LOG_TIME_POINT_FUNC(logger.get_clock()), clock, \
-        ::rosfmt::getLoggerName(logger), "%s", rosfmt::format(duration, __VA_ARGS__).c_str()); \
-    else if constexpr (std::is_convertible_v<decltype(logger), const rclcpp::Node &>) \
-    RCUTILS_LOG_THROTTLE_NAMED( \
-        severity, RCLCPP_LOG_TIME_POINT_FUNC(logger->get_clock()), clock, \
-        ::rosfmt::getLoggerName(logger), "%s", rosfmt::format(duration, __VA_ARGS__).c_str()); \
-    else \
-    RCUTILS_LOG_THROTTLE_NAMED( \
-        severity, RCLCPP_LOG_TIME_POINT_FUNC(clock), duration, ::rosfmt::getLoggerName(logger), \
-        "%s", rosfmt::format(__VA_ARGS__).c_str()); \
+        severity, RCLCPP_LOG_TIME_POINT_FUNC(rosfmt_args.clock), rosfmt_args.duration, \
+      rosfmt_args.loggerName, \
+        "%s", rosfmt::formatThrottle(durationArg, __VA_ARGS__).c_str()); \
   } while (0)
 
 /**
@@ -212,18 +205,11 @@ template<class ... Args>
  */
 #define ROSFMT_LOG_SKIPFIRST_THROTTLE(severity, logger, clock, duration, ...) \
   do { \
-    if constexpr (std::is_convertible_v<decltype(logger), const rclcpp::Node &>) \
+    auto rosfmt_args = ::rosfmt::getThrottleArgs(loggerArg, clockArg, durationArg); \
     RCUTILS_LOG_SKIPFIRST_THROTTLE_NAMED( \
-        severity, RCLCPP_LOG_TIME_POINT_FUNC(logger.get_clock()), clock, \
-        ::rosfmt::getLoggerName(logger), "%s", rosfmt::format(duration, __VA_ARGS__).c_str()); \
-    else if constexpr (std::is_convertible_v<decltype(logger), const rclcpp::Node &>) \
-    RCUTILS_LOG_SKIPFIRST_THROTTLE_NAMED( \
-        severity, RCLCPP_LOG_TIME_POINT_FUNC(logger->get_clock()), clock, \
-        ::rosfmt::getLoggerName(logger), "%s", rosfmt::format(duration, __VA_ARGS__).c_str()); \
-    else \
-    RCUTILS_LOG_SKIPFIRST_THROTTLE_NAMED( \
-        severity, RCLCPP_LOG_TIME_POINT_FUNC(clock), duration, ::rosfmt::getLoggerName(logger), \
-        "%s", rosfmt::format(__VA_ARGS__).c_str()); \
+        severity, RCLCPP_LOG_TIME_POINT_FUNC(rosfmt_args.clock), rosfmt_args.duration, \
+      rosfmt_args.loggerName, \
+        "%s", rosfmt::formatThrottle(durationArg, __VA_ARGS__).c_str()); \
   } while (0)
 
 #else

@@ -25,9 +25,10 @@
 
 #include <fmt/core.h>
 
+#include <string>
+
 #include <rclcpp/node.hpp>
 #include <rosfmt/logging_macros.hpp>
-#include <string>
 
 namespace rosfmt
 {
