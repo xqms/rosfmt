@@ -25,32 +25,34 @@
 
 #include <fmt/core.h>
 
+#include <rclcpp/node.hpp>
+#include <rosfmt/logging_macros.hpp>
 #include <string>
 
-#include <rosfmt/logging_macros.hpp>
-
-#include <rclcpp/node.hpp>
-
-namespace rosfmt {
+namespace rosfmt
+{
 
 std::string vformat(fmt::string_view format_str, fmt::format_args args);
 
-template <typename... Args>
-std::string format(const std::string &formatString, const Args &...args) {
-  fmt::format_arg_store<fmt::format_context, Args...> as{args...};
+template<typename ... Args>
+std::string format(const std::string & formatString, const Args &... args)
+{
+  fmt::format_arg_store<fmt::format_context, Args...> as{args ...};
   return rosfmt::vformat(formatString, as);
 }
 
-template <class... Args>
+template<class ... Args>
 [[maybe_unused]]
-std::string formatThrottle(const std::chrono::milliseconds &duration,
-                           const char *format, const Args &...args) {
-  return ::rosfmt::format(format, args...);
+std::string formatThrottle(
+  const std::chrono::milliseconds & duration, const char * format, const Args &... args)
+{
+  return ::rosfmt::format(format, args ...);
 }
-template <class... Args>
+template<class ... Args>
 [[maybe_unused]]
-std::string formatThrottle(const char *format, const Args &...args) {
-  return ::rosfmt::format(format, args...);
+std::string formatThrottle(const char * format, const Args &... args)
+{
+  return ::rosfmt::format(format, args ...);
 }
 
 }  // namespace rosfmt

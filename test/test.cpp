@@ -24,21 +24,21 @@
 
 using namespace std::chrono_literals;
 
-int main(int argc, char** argv)
+int main(int argc, char ** argv)
 {
-    rclcpp::init(argc, argv);
+  rclcpp::init(argc, argv);
 
-    rclcpp::Logger logger = rclcpp::get_logger("test_logger");
+  rclcpp::Logger logger = rclcpp::get_logger("test_logger");
 
-    ROSFMT_INFO(logger, "Hello world");
-    ROSFMT_INFO(logger, "This is five: {}", 5);
+  ROSFMT_INFO(logger, "Hello world");
+  ROSFMT_INFO(logger, "This is five: {}", 5);
 
-    rclcpp::Node node{"test_node"};
+  rclcpp::Node node{"test_node"};
 
-    ROSFMT_INFO(node, "Hello world from a node");
+  ROSFMT_INFO(node, "Hello world from a node");
 
-    ROSFMT_INFO_THROTTLE(node, 2s, "Throttled");
-    ROSFMT_INFO_THROTTLE(node.get_logger(), *node.get_clock(), 2s, "Throttled");
+  ROSFMT_INFO_THROTTLE(node, 2s, "Throttled");
+  ROSFMT_INFO_THROTTLE(node.get_logger(), *node.get_clock(), 2s, "Throttled");
 
-    return 0;
+  return 0;
 }

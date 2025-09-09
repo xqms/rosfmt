@@ -20,16 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <rosfmt/rosfmt.hpp>
-
 #include <fmt/format.h>
+
+#include <rosfmt/rosfmt.hpp>
 
 namespace rosfmt
 {
 
 std::string vformat(fmt::string_view format_str, fmt::format_args args)
 {
-    return fmt::vformat(format_str, args);
+  return fmt::vformat(format_str, args);
 }
 
-}
+}  // namespace rosfmt
