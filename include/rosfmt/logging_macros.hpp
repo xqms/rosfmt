@@ -99,7 +99,8 @@ template<class ... Args>
  */
 #define ROSFMT_LOG(severity, logger, ...) \
   do { \
-    RCUTILS_LOG_NAMED(severity, getLoggerName(logger), "%s", rosfmt::format(__VA_ARGS__).c_str()); \
+    RCUTILS_LOG_NAMED(severity, ::rosfmt::getLoggerName(logger), "%s", \
+      rosfmt::format(__VA_ARGS__).c_str()); \
   } while (0)
 
 /**
@@ -186,7 +187,7 @@ template<class ... Args>
     RCUTILS_LOG_THROTTLE_NAMED( \
         severity, RCLCPP_LOG_TIME_POINT_FUNC(rosfmt_args.clock), rosfmt_args.duration, \
       rosfmt_args.loggerName, \
-        "%s", rosfmt::formatThrottle(durationArg, __VA_ARGS__).c_str()); \
+        "%s", rosfmt::formatThrottle(durationArg __VA_OPT__( , ) __VA_ARGS__).c_str()); \
   } while (0)
 
 /**
@@ -209,7 +210,7 @@ template<class ... Args>
     RCUTILS_LOG_SKIPFIRST_THROTTLE_NAMED( \
         severity, RCLCPP_LOG_TIME_POINT_FUNC(rosfmt_args.clock), rosfmt_args.duration, \
       rosfmt_args.loggerName, \
-        "%s", rosfmt::formatThrottle(durationArg, __VA_ARGS__).c_str()); \
+        "%s", rosfmt::formatThrottle(durationArg __VA_OPT__( , ) __VA_ARGS__).c_str()); \
   } while (0)
 
 #else
