@@ -4,14 +4,13 @@
     fmt is an open-source formatting library for C++.
     It can be used as a safe and fast alternative to (s)printf and IOStreams.
   </description>
-  <license>BSD</license>
+  <license>MIT</license>
   <version>8.0.0</version>
 
   <maintainer email="max.schwarz@ais.uni-bonn.de">Max Schwarz</maintainer>
 
   <buildtool_depend>ament_cmake_ros</buildtool_depend>
-  <depend>roscpp</depend>
-  <depend>rosconsole</depend>
+  <depend>rclcpp</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
