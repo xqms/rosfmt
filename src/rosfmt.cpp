@@ -26,10 +26,21 @@
 
 namespace rosfmt
 {
-
-std::string vformat(fmt::string_view format_str, fmt::format_args args)
+namespace internal
 {
-  return fmt::vformat(format_str, args);
+
+const char * vformat(fmt::string_view format_str, fmt::format_args args)
+{
+  static thread_local auto buf = [](){
+      auto b = fmt::memory_buffer();
+      b.reserve(512);
+      return b;
+    }();
+  buf.clear();
+  fmt::vformat_to(std::back_inserter(buf), format_str, args);
+  buf.push_back(0);
+  return buf.data();
 }
 
+}    // namespace internal
 }  // namespace rosfmt
