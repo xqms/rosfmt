@@ -27,7 +27,8 @@ install(TARGETS rosfmt
 )
 install(DIRECTORY include/ DESTINATION include/${PROJECT_NAME})
 
-ament_export_targets(export_rosfmt)
+ament_export_targets(export_rosfmt HAS_LIBRARY_TARGET)
+ament_export_dependencies(rclcpp fmt)
 
 if(BUILD_TESTING)
     add_executable(simple_test
