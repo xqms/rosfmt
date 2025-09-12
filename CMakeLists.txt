@@ -4,7 +4,6 @@ project(rosfmt)
 
 find_package(ament_cmake_ros REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(fmt REQUIRED)
 
 add_library(rosfmt SHARED
     src/rosfmt.cpp
@@ -15,7 +14,6 @@ target_include_directories(rosfmt PUBLIC
 )
 target_link_libraries(rosfmt PUBLIC
     rclcpp::rclcpp
-    fmt::fmt
 )
 target_compile_features(rosfmt PUBLIC cxx_std_20)
 
@@ -28,7 +26,7 @@ install(TARGETS rosfmt
 install(DIRECTORY include/ DESTINATION include/${PROJECT_NAME})
 
 ament_export_targets(export_rosfmt HAS_LIBRARY_TARGET)
-ament_export_dependencies(rclcpp fmt)
+ament_export_dependencies(rclcpp)
 
 if(BUILD_TESTING)
     add_executable(simple_test

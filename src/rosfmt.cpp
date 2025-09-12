@@ -20,8 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include <fmt/format.h>
-
 #include <rosfmt/rosfmt.hpp>
 
 namespace rosfmt
@@ -29,16 +27,16 @@ namespace rosfmt
 namespace internal
 {
 
-const char * vformat(fmt::string_view format_str, fmt::format_args args)
+const char * vformat(std::string_view format_str, std::format_args args)
 {
   static thread_local auto buf = [](){
-      auto b = fmt::memory_buffer();
+      std::string b;
       b.reserve(512);
       return b;
-    }();
+  }();
+
   buf.clear();
-  fmt::vformat_to(std::back_inserter(buf), format_str, args);
-  buf.push_back(0);
+  std::vformat_to(std::back_inserter(buf), format_str, args);
   return buf.data();
 }
 

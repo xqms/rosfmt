@@ -23,7 +23,7 @@
 #ifndef ROSFMT__ROSFMT_HPP_
 #define ROSFMT__ROSFMT_HPP_
 
-#include <fmt/format.h>
+#include <format>
 
 #include <chrono>
 #include <rclcpp/logging.hpp>
@@ -34,25 +34,24 @@ namespace rosfmt
 namespace internal
 {
 
-const char * vformat(fmt::string_view format_str, fmt::format_args args);
+const char * vformat(std::string_view format_str, std::format_args args);
 
 template<typename ... Args>
-const char * format(fmt::string_view formatString, const Args &... args)
+const char * format(std::string_view formatString, Args &&... args)
 {
-  fmt::format_arg_store<fmt::format_context, Args...> as{args ...};
-  return ::rosfmt::internal::vformat(formatString, as);
+  return ::rosfmt::internal::vformat(formatString, std::make_format_args(args...));
 }
 
 template<class ... Args>
 [[maybe_unused]]
 const char * formatThrottle(
-  const std::chrono::milliseconds &, const char * format, const Args &... args)
+  const std::chrono::milliseconds &, const char * format, Args &&... args)
 {
   return ::rosfmt::internal::format(format, args ...);
 }
 template<class ... Args>
 [[maybe_unused]]
-const char * formatThrottle(const char * format, const Args &... args)
+const char * formatThrottle(const char * format, Args &&... args)
 {
   return ::rosfmt::internal::format(format, args ...);
 }
