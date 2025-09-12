@@ -357,7 +357,7 @@ template<class ... Args>
       }; \
     RCUTILS_LOG_COND_NAMED( \
       severity, RCUTILS_LOG_CONDITION_THROTTLE_BEFORE(get_time_point, rosfmt_args.duration), \
-      RCUTILS_LOG_CONDITION_THROTTLE_AFTER, ::rosfmt::internal::getLoggerName(logger), "%s", \
+      RCUTILS_LOG_CONDITION_THROTTLE_AFTER, rosfmt_args.loggerName, "%s", \
       rosfmt::internal::formatThrottle(durationArg __VA_OPT__( , ) __VA_ARGS__)); \
   } while (0)
 
@@ -395,7 +395,7 @@ template<class ... Args>
       RCUTILS_LOG_CONDITION_THROTTLE_BEFORE(get_time_point, \
       rosfmt_args.duration) RCUTILS_LOG_CONDITION_SKIPFIRST_BEFORE, \
       RCUTILS_LOG_CONDITION_THROTTLE_AFTER RCUTILS_LOG_CONDITION_SKIPFIRST_AFTER, \
-      ::rosfmt::internal::getLoggerName(logger), "%s", \
+      rosfmt_args.loggerName, "%s", \
       rosfmt::internal::formatThrottle(durationArg __VA_OPT__( , ) __VA_ARGS__)); \
     while (0)
 
