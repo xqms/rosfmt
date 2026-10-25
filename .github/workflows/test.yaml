@@ -3,12 +3,17 @@ on: [push]
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
-        rosdistro: [jazzy, rolling]
+        include:
+          - rosdistro: jazzy
+            ubuntu: noble
+          - rosdistro: rolling
+            ubuntu: resolute
     name: "ROS ${{ matrix.rosdistro }}"
     runs-on: ubuntu-latest
     container:
-      image: rostooling/setup-ros-docker:ubuntu-noble-latest
+      image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu }}-latest
     steps:
       - name: Build and run tests
         uses: ros-tooling/action-ros-ci@v0.4
