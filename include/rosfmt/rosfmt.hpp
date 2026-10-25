@@ -39,7 +39,7 @@ const char * vformat(std::string_view format_str, std::format_args args);
 template<typename ... Args>
 const char * format(std::string_view formatString, Args &&... args)
 {
-  return ::rosfmt::internal::vformat(formatString, std::make_format_args(args...));
+  return ::rosfmt::internal::vformat(formatString, std::make_format_args(args ...));
 }
 
 template<class ... Args>

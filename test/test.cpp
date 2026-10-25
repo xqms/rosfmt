@@ -33,12 +33,16 @@ int main(int argc, char ** argv)
   ROSFMT_INFO(logger, "Hello world");
   ROSFMT_INFO(logger, "This is five: {}", 5);
 
-  rclcpp::Node node{"test_node"};
+  {
+    rclcpp::Node node{"test_node"};
 
-  ROSFMT_INFO(node, "Hello world from a node");
+    ROSFMT_INFO(node, "Hello world from a node");
 
-  ROSFMT_INFO_THROTTLE(node, 2s, "Throttled");
-  ROSFMT_INFO_THROTTLE(node.get_logger(), *node.get_clock(), 2s, "Throttled");
+    ROSFMT_INFO_THROTTLE(node, 2s, "Throttled");
+    ROSFMT_INFO_THROTTLE(node.get_logger(), *node.get_clock(), 2s, "Throttled");
+  }
 
+  // Shut down explicitly: leaving it to static destruction at exit makes rmw_zenoh abort.
+  rclcpp::shutdown();
   return 0;
 }

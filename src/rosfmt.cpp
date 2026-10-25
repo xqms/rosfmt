@@ -33,7 +33,7 @@ const char * vformat(std::string_view format_str, std::format_args args)
       std::string b;
       b.reserve(512);
       return b;
-  }();
+    }();
 
   buf.clear();
   std::vformat_to(std::back_inserter(buf), format_str, args);
